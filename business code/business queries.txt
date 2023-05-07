@@ -1,0 +1,90 @@
+SELECT TOP 50
+       value [word]
+     , COUNT(*) [#times]
+FROM bizfinal p
+CROSS APPLY STRING_SPLIT(p.catgeories, ' ')
+GROUP BY value
+ORDER BY COUNT(*) DESC
+
+
+Most popular business in the top 10 cities:
+select name, city, review_count from bizfinal t where t.review_count = (select max(review_count) from bizfinal where city=t.city) order by review_count DESC limit 10;
+
+
+
+
+Avg stars of top 10 most reviewed states:
+SELECT distinct state, avg(stars) as avg_stars, sum(review_count)as num_reviews FROM bizfinal GROUP BY state ORDER by sum(review_count) DESC limit 10;
+
+
+
+Average stars of cities of most popular cities:
+SELECT distinct city, avg(stars) as avg_stars, sum(review_count)as num_reviews FROM bizfinal
+GROUP BY city ORDER by sum(review_count) DESC;
+
+
+
+Number of reviews per state:
+(select state, count(review_count) as count 
+                    -> from bizfinal group by state);
+
+
+Most reviewed business by state:
+(select state, max(review_count) as MAX 
+                    ->     from bizfinal 
+                    ->     group by state);
+
+
+
+Average stars by state:
+(select state, avg(stars) as Average_stars from bizfinal
+                    -> group by state);
+
+
+
+Average stars by city:
+(select city, avg(stars) 
+                    ->     from bizfinal
+                    ->     group by city);
+
+
+
+
+City with most businesses:
+select city, COUNT(*) AS by_city FROM bizfinal GROUP BY city ORDER by by_city DESC;
+
+
+
+
+Most reviewed business by city:
+(select city, max(review_count) 
+                    ->     from bizfinal 
+                    ->     group by city);
+
+
+
+
+Top 20 categories:
+#Run custom MR (Cat.java) to get category count into table, then sort in hive.
+select * from catcount order by count DESC limit 20;
+
+
+
+Trying categories:
+select  catgeories
+                    ->        ,split(coalesce(catgeories,''),'[^;\\s]+')  as count_of_category
+                    -> 
+                    -> from    bizfinal;
+
+
+
+SELECT * FROM bizfinalWHERE 
+catgeories LIKE '%Restaurants%'
+GROUP BY STATE;
+
+
+
+
+
+
+
